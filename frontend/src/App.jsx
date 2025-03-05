@@ -43,7 +43,7 @@ function App() {
       </form>
       <ul>
         {todos.map(todo => 
-          <li>hello</li>
+          <li key={todo._id}>{todo.text}</li>
         )}
       </ul>
     </>

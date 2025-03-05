@@ -4,14 +4,22 @@ import 'dotenv/config'
 
 import connectDB from './db.js'
 
+import Todo from './models/todoModel.js'
+
 const app = express()
 
 const port = 8080
 
 app.use(cors())
 
-app.get('/test', (req, res) => {
-    res.json('Hello (from server)')
+app.get('/api/todos', async (req, res) => {
+    try {
+        const todos = await Todo.find({})
+        res.status(200).json(todos)
+    } catch(err) {
+        console.log(err)
+        res.status(400).json(err)
+    }
 })
 
 app.listen(port, () => {

@@ -45,6 +45,19 @@ app.delete('/api/todos/:id', async (req, res) => {
     }
 }) 
 
+app.put('/api/todos/:id', async (req, res) => {
+    try {
+        console.log('PUT /todos/:id')
+        console.log(req.body)
+        const response = await Todo.findByIdAndUpdate(req.params.id, req.body) // can add { new: true } as third argument
+        // console.log(response)
+        res.status(200).json(response)
+    } catch(err) {
+        console.log(err)
+        res.status(400).json(err)
+    }
+})
+
 app.listen(port, () => {
     console.log('Listening on port: ', port)
     connectDB()

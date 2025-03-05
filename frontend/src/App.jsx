@@ -45,7 +45,10 @@ function App() {
     foundTodo.completed = !foundTodo.completed
     await fetch(`http://localhost:8080/api/todos/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(foundTodo)
+      body: JSON.stringify(foundTodo),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     })
     getTodos()
   }

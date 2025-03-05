@@ -1,21 +1,50 @@
-import { useEffect } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './App.css'
 
 function App() {
 
-  async function test() {
+  const [todos, setTodos] = useState([])
+  const textRef = useRef()
+
+  async function getTodos() {
     const response = await fetch('http://localhost:8080/api/todos')
     const result = await response.json()
-    console.log(result)
+    setTodos(result)
   }
 
   useEffect(() => {
-    test()
+    getTodos()
   }, [])
+
+  console.log(todos)
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    const todo = { 
+      text: textRef.current.value
+    }
+    const response = await fetch('http://localhost:8080/api/todos', {
+      method: 'POST',
+      body: JSON.stringify(todo),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    console.log(response)
+  }
 
   return (
     <>
-      Hello World!
+      <h1>Todos</h1>
+      <form onSubmit={handleSubmit}>
+        <input ref={textRef} />
+        <button>Submit</button>
+      </form>
+      <ul>
+        {todos.map(todo => 
+          <li>hello</li>
+        )}
+      </ul>
     </>
   )
 }

@@ -7,6 +7,7 @@ import connectDB from './db.js'
 import Todo from './models/todoModel.js'
 import User from "./models/userModel.js"
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 const app = express()
 
 const port = 8080
@@ -29,16 +30,41 @@ app.post("/api/signup",async(req,res)=>{
     }
     
 })
-app.get("/api/login",async(req,res)=>{
-    let isValid = await bcrypt.compare("fdgg","$2b$10$XM8kvX.egBjD2LM7a0aKm.IcGChaczWao0NvNTB/UhS6RU.LWWSBO")
-    console.log("🚀 ~ app.get ~ isValid:", isValid)
-    res.send(isValid)
+app.post("/api/login",async(req,res)=>{
+    let {password,email} = req.body
+    let userDoc= await User.findOne({email:email})
+
+    if(!userDoc){
+       return res.status(404).json({error:"no such a user exists"})
+    }
+
+    let isPasswordValid = await bcrypt.compare(password,userDoc.password)
+
+    if(!isPasswordValid){
+        return res.status(400).json({error:"wrong password"})
+    }
+
+    console.log("🚀 ~ app.post ~ isPasswordValid:", isPasswordValid)
+    console.log("🚀 ~ app.post ~ userDoc:", userDoc)
+    console.log("🚀 ~ app.post ~ password:", password)
+    console.log("🚀 ~ app.post ~ email:", email)
+    let key = process.env.JWT_Key
+    let token = jwt.sign({email},key,{expiresIn:"1d"})
+    res.json({token,email,id:userDoc._id})
 })
 
+app.get("/token",(req,res)=>{
+    let obj={
+        email:"harry@gmail.com"
+    }
+    let token = jwt.sign(obj,"gjoijgdioggjo",{expiresIn:"3d"})
+    console.log("🚀 ~ app.get ~ token:", token)
+    res.send({token})
+})
 
 app.get('/api/todos', async (req, res) => {
     try {
-        const todos = await Todo.find({})
+        const todos = await Todo.find({userId:"67c9d6da16b28a4625baebc5"})
         res.status(200).json(todos)
     } catch(err) {
         console.log(err)

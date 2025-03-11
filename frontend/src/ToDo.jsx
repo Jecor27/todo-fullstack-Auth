@@ -3,25 +3,30 @@ import './App.css'
 
 const BASE_URL = import.meta.env.VITE_API
 
-function ToDo() {
+function ToDo({userAuth}) {
 
   const [todos, setTodos] = useState([])
   const textRef = useRef()
 
   async function getTodos() {
-    const response = await fetch(`${BASE_URL}/api/todos`)
+    
+    console.log("🚀 ~ getTodos ~ userAuth.userId:", userAuth)
+    const response = await fetch(`${BASE_URL}/api/todos/${userAuth.id}`)
     const result = await response.json()
     setTodos(result)
   }
 
   useEffect(() => {
-    getTodos()
-  }, [])
+    if(userAuth) {
+      getTodos()
+    }
+  }, [userAuth])
 
   async function handleSubmit(e) {
     e.preventDefault()
     const todo = { 
-      text: textRef.current.value
+      text: textRef.current.value,
+      userId:userAuth.id
     }
     const response = await fetch(`${BASE_URL}/api/todos`, {
       method: 'POST',

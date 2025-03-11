@@ -1,12 +1,15 @@
 import React,{useState} from 'react';
 import axios from "axios"
-const LogIn = () => {
+import { useNavigate } from 'react-router-dom';
+
+const LogIn = ({setUserAuth}) => {
     const [email,setEmail] = useState('')
     const [password,setPassword] = useState('')
 
     const [loading,setLoading]=useState(false)
     const [success,setSuccess]=useState(false)
     const [error,setError]= useState("")
+    const navigate= useNavigate()
     const handleSubmit = async(e)=>{
         e.preventDefault()
         if(loading) {
@@ -24,12 +27,15 @@ const LogIn = () => {
         let url = import.meta.env.VITE_API // http://localhost:8080
         
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // await new Promise(resolve => setTimeout(resolve, 2000));
 
             let response = await axios.post(url+"/api/login",data)
-            
             console.log(response)
             setSuccess(true)
+            localStorage.setItem("user",JSON.stringify(response.data))
+            console.log(JSON.stringify(response.data))
+            setUserAuth(response.data)
+            // navigate("/")
             } catch (error) {
                 console.log("🚀 ~ handleSubmit ~ error:", error)
                 setError(error.response.data.error)

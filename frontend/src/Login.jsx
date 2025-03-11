@@ -33,7 +33,8 @@ const LogIn = ({setUserAuth}) => {
             console.log(response)
             setSuccess(true)
             localStorage.setItem("user",JSON.stringify(response.data))
-            console.log(JSON.stringify(response.data))
+            console.log(response.data)
+            axios.defaults.headers.common['Authorization'] = "Bearer "+response.data.token;
             setUserAuth(response.data)
             // navigate("/")
             } catch (error) {

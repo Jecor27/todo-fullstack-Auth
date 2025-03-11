@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import axios from "axios"
-const SignUp = () => {
+const SignUp = ({setUserAuth}) => {
     const [email,setEmail] = useState('')
     const [password,setPassword] = useState('')
 
@@ -16,6 +16,9 @@ const SignUp = () => {
             
             let response = await axios.post(url+"/api/signup",data)
              console.log(response)
+             localStorage.setItem("user",JSON.stringify(response.data))
+             axios.defaults.headers.common['Authorization'] = "Bearer "+response.data.token
+             setUserAuth(response.data)
         } catch (error) {
             console.log("🚀 ~ handleSubmit ~ error:", error)
             

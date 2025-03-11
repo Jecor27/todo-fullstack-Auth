@@ -4,14 +4,16 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import ToDo from './ToDo';
 import LogIn from './Login';
 import NavBar from './NavBar';
-
+import axios from "axios"
 const App = () => {
   const [userAuth,setUserAuth]= useState(null)
 
 
   useEffect(()=>{
     let user = localStorage.getItem("user")
-    setUserAuth(JSON.parse(user))
+    user = JSON.parse(user)
+    axios.defaults.headers.common['Authorization'] = "Bearer "+user.token
+    setUserAuth(user)
   },[])
     return (
         <div>

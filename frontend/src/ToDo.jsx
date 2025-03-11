@@ -9,10 +9,15 @@ function ToDo({userAuth}) {
   const textRef = useRef()
 
   async function getTodos() {
-    
+
     console.log("🚀 ~ getTodos ~ userAuth.userId:", userAuth)
-    const response = await fetch(`${BASE_URL}/api/todos/${userAuth.id}`)
+    const response = await fetch(`${BASE_URL}/api/todos`,{
+      headers:{
+        Authorization:"Bearer "+ userAuth.token
+      }
+    })
     const result = await response.json()
+    console.log("🚀 ~ getTodos ~ result:", result)
     setTodos(result)
   }
 
